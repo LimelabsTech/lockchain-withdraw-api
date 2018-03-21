@@ -53,14 +53,12 @@ public class HotelReservation {
 				iHotelReservationFactoryProxyAddress, web3, createCredentials(), ManagedTransaction.GAS_PRICE,
 				Contract.GAS_LIMIT);
 		TransactionReceipt setWithdrawer = null;
-		System.out.println(hotelReservationFactory);
 		try {
 			setWithdrawer = hotelReservationFactory.setWithdrawerAddress("0xb63df2068d209f8ff3925c4c9dbbabfd31301825")
 					.send();
 		} catch (Exception e) {
 			throw new SmartContractException("Setting the withdrawer address failed");
 		}
-		System.out.println( setWithdrawer + "WITHDRAWE");
 		return setWithdrawer;
 	}
 	
@@ -77,7 +75,6 @@ public class HotelReservation {
 		} catch (Exception e) {
 			throw new SmartContractException("Setting the withdrawer destination address failed");
 		}
-		System.out.println( setWithdrawerDestinationAddress + "WITHDRAWE DESTINATION");
 		return setWithdrawerDestinationAddress;
 	}
 
@@ -95,7 +92,6 @@ public class HotelReservation {
 		} catch (Exception e) {
 			throw new SmartContractException("Setting the cycles count failed");
 		}
-		System.out.println(cyclesCount + "CYCLES COUNT");
 		return cyclesCount;
 	}
 	
@@ -103,7 +99,6 @@ public class HotelReservation {
 	public static void withdrawAll() throws Exception {
 
 		hotelReservationsForWithdrawTotal = prepareArrayForWithdraw();
-		System.out.println(hotelReservationsForWithdrawTotal + "ARAY TO WITHDRAW TOTAL");
 		while (hotelReservationsForWithdrawTotal.size() > 0) {
 			withdraw();
 		}
@@ -125,10 +120,8 @@ public class HotelReservation {
 
 		BigInteger activeReservationsCount = null;
 		try {
-			System.out.println(hotelReservationFactory.getHotelReservationsCount().send());
 			activeReservationsCount = hotelReservationFactory.getHotelReservationsCount().send();
-		} catch (Exception e1) {
-			System.out.println(e1);
+		} catch (Exception e) {
 			throw new SmartContractException("Getting the reservations count failed");
 
 		}
@@ -142,7 +135,6 @@ public class HotelReservation {
 			try {
 				
 				hotelReservationId = hotelReservationFactory.getHotelReservationId(reservationId).send();
-				System.out.println(hotelReservationId + "HOTEL RESERVAION ID");
 		
 			} catch (Exception e) {
 				throw new SmartContractException("Getting the Reservation ID failed");
@@ -202,11 +194,8 @@ public class HotelReservation {
 		if (maxCyclesCount.intValue() > hotelReservationsForWithdrawTotal.size()) {
 			cylcesCount = hotelReservationsForWithdrawTotal.size();
 		}
-		System.out.println(cylcesCount + "THE CYCLES COUNT");
 		List<String> totalReservaationsForWithdraw = new ArrayList<>();
 		for (int i = 0; i < cylcesCount; i++) {
-			System.out.println(hotelReservationsForWithdrawTotal);
-			System.out.println(i);
 			String hotelReservation = hotelReservationsForWithdrawTotal.get(0);
 			totalReservaationsForWithdraw.add(hotelReservation);
 			hotelReservationsForWithdrawTotal.remove(0);
@@ -214,19 +203,17 @@ public class HotelReservation {
 
 		TransactionReceipt result;
 		try {
-			System.out.println(totalReservaationsForWithdraw);
 			result = hotelReservationFactory.withdraw(totalReservaationsForWithdraw).send();
 		} catch (Exception e) {
 			throw new SmartContractException("The withdraw has failed");
 		}
-		System.out.println(result);
 		return result;
 	}
 
 	public static void main(String[] args) throws Exception {
-//		setWithdrawer();
-//		setWithdrawerDestinationAddress();
-//		setMaxAllowedCyclesCount();
-//		withdrawAll();
+		setWithdrawer();
+		setWithdrawerDestinationAddress();
+		setMaxAllowedCyclesCount();
+		withdrawAll();
 	}
 }
