@@ -34,16 +34,21 @@ public class LocExchange {
 	// The same configuration as the rest-api, except this should be the withdrawer
 	// user
 	static String jsonString = "{\"version\":3,\"id\":\"d44f162d-1f91-4ade-9d5f-414661295df0\",\"address\":\"b63df2068d209f8ff3925c4c9dbbabfd31301825\",\"Crypto\":{\"ciphertext\":\"2d40317fc74b4ea71930a0a6681507addc103e127e65a663cf731537ef79726d\",\"cipherparams\":{\"iv\":\"f90df4df3a67d85e7e34f84a7c0b15fd\"},\"cipher\":\"aes-128-ctr\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"salt\":\"473b462c67127e8260fea0ff7fe716d17b6792278160937a29d8875294d0f92a\",\"n\":8192,\"r\":8,\"p\":1},\"mac\":\"b94eada113e11314895cb559bd79e72c0dc27eb15ed4ebb666ffb80977859f13\"}}";
+//	static String jsonString = "{\"version\":3,\"id\":\"a8dfc521-54c3-4e3f-88e6-d6dda4dfc2a8\",\"address\":\"c600f06141cd6685c59a5f346cdd3c967b18d8df\",\"Crypto\":{\"ciphertext\":\"a77da4feab489f01057e9268aa0a423cf0832533cc26e08607a29114f4368d5b\",\"cipherparams\":{\"iv\":\"47f5be03585de2a99709eec69c7fc332\"},\"cipher\":\"aes-128-ctr\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"salt\":\"216bb226a925e96a3c3bd79c3a1081c681d7c005156601979c6bbd6e25e45240\",\"n\":1024,\"r\":8,\"p\":1},\"mac\":\"125d69531321d8c733bd1af01d7d06fefca65c45a6efd13b3ae5cda536c7c831\"}}";
+	
 	static String password = "123456789";
 	// This is the address of teh contract when deployed
-	static String locExchangeContractAddress = "0x99c9c310d8810e703512a115de8accf077bb51d9";
+//	static String locExchangeContractAddress = "0x99c9c310d8810e703512a115de8accf077bb51d9";
+	static String locExchangeContractAddress = "0x90da06f72db34e3fed2bcfcda70ec25cad442fee";
 	static String owner = "0xb63df2068d209f8ff3925c4c9dbbabfd31301825";
+//	static String owner = "0xc600f06141cd6685c59a5f346cdd3c967b18d8df";
 
-	static String exchangeOracleContractAddress = "0xdcd50ed649f65f15d5e6da63ed1c535b6cf2c0a0";
+//	static String exchangeOracleContractAddress = "0xdcd50ed649f65f15d5e6da63ed1c535b6cf2c0a0";
+	static String exchangeOracleContractAddress = "0x1a1edbf314c1db171ceb6e414cfa444a08f413b1";
 	// This should be changed for different environments, can be used with a config
 	// file. This is the same as the rest-api
 	static Web3j web3 = Web3j.build(new HttpService("https://ropsten.infura.io/Up5uvBHSCSqtOmnlhL87"));
-	// static Web3j web3 = Web3j.build(new HttpService()); 
+//	 static Web3j web3 = Web3j.build(new HttpService()); 
 
 	public static Credentials createCredentials() throws IOException, CipherException {
 
@@ -99,6 +104,7 @@ public class LocExchange {
 		} catch (Exception e) {
 			throw new SmartContractException("Getting the rate failed");
 		}
+		System.out.println(newRate);
 		return newRate;
 	}
 
@@ -118,18 +124,20 @@ public class LocExchange {
 		EthSendTransaction ethSendTransaction;
 		try {
 			ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get();
+			System.out.println("dadada");
 		} catch (ExecutionException e) {
 			throw new SmartContractException("Sending ether to the smart contract failed");
 		}
 		String transactionHash = ethSendTransaction.getTransactionHash();
+		System.out.println(transactionHash);
 		return transactionHash;
 	}
 
 	public static void main(String[] args) throws Exception {
-		setRate();
+//		setRate();
 		getRate();
-		withdrawLoc();
-		sendEther();
+//		withdrawLoc();
+//		sendEther();
 	}
 
 }

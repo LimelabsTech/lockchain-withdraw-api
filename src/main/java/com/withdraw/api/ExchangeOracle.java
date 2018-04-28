@@ -43,7 +43,7 @@ public class ExchangeOracle extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<>();
+        _addresses = new HashMap<String, String>();
     }
 
     protected ExchangeOracle(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {

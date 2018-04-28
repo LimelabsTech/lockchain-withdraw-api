@@ -8,9 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.web3j.abi.EventEncoder;
-import org.web3j.abi.EventValues;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.DynamicArray;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
@@ -23,7 +24,7 @@ import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tuples.generated.Tuple10;
+import org.web3j.tuples.generated.Tuple11;
 import org.web3j.tuples.generated.Tuple2;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
@@ -45,7 +46,7 @@ public class IHotelReservation extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<String, String>();
+        _addresses = new HashMap<>();
     }
 
     protected IHotelReservation(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -60,17 +61,16 @@ public class IHotelReservation extends Contract {
         final Event event = new Event("LogCreateHotelReservation", 
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogCreateHotelReservationEventResponse> responses = new ArrayList<LogCreateHotelReservationEventResponse>(valueList.size());
-        for (EventValues eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             LogCreateHotelReservationEventResponse typedResponse = new LogCreateHotelReservationEventResponse();
-//            typedResponse.log = eventValues.getLog();
+            typedResponse.log = eventValues.getLog();
             typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse._customerAddress = (String) eventValues.getNonIndexedValues().get(1).getValue();
             typedResponse._reservationStartDate = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
             typedResponse._reservationEndDate = (BigInteger) eventValues.getNonIndexedValues().get(3).getValue();
             responses.add(typedResponse);
-            
         }
         return responses;
     }
@@ -82,8 +82,9 @@ public class IHotelReservation extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogCreateHotelReservationEventResponse>() {
+            @Override
             public LogCreateHotelReservationEventResponse call(Log log) {
-                EventValues eventValues = extractEventParameters(event, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogCreateHotelReservationEventResponse typedResponse = new LogCreateHotelReservationEventResponse();
                 typedResponse.log = log;
                 typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
@@ -99,11 +100,11 @@ public class IHotelReservation extends Contract {
         final Event event = new Event("LogCancelHotelReservation", 
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}));
-        List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogCancelHotelReservationEventResponse> responses = new ArrayList<LogCancelHotelReservationEventResponse>(valueList.size());
-        for (EventValues eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             LogCancelHotelReservationEventResponse typedResponse = new LogCancelHotelReservationEventResponse();
-//            typedResponse.log = eventValues.getLog();
+            typedResponse.log = eventValues.getLog();
             typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse._customerAddress = (String) eventValues.getNonIndexedValues().get(1).getValue();
             responses.add(typedResponse);
@@ -118,8 +119,9 @@ public class IHotelReservation extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogCancelHotelReservationEventResponse>() {
+            @Override
             public LogCancelHotelReservationEventResponse call(Log log) {
-                EventValues eventValues = extractEventParameters(event, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogCancelHotelReservationEventResponse typedResponse = new LogCancelHotelReservationEventResponse();
                 typedResponse.log = log;
                 typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
@@ -167,7 +169,7 @@ public class IHotelReservation extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> createHotelReservation(byte[] _hotelReservationId, String customerAddress, BigInteger _reservationCostLOC, BigInteger _reservationStartDate, BigInteger _reservationEndDate, BigInteger _daysBeforeStartForRefund, BigInteger _refundPercentage, byte[] _hotelId, byte[] _roomId, BigInteger _numberOfTravelers) {
+    public RemoteCall<TransactionReceipt> createHotelReservation(byte[] _hotelReservationId, String customerAddress, BigInteger _reservationCostLOC, BigInteger _reservationStartDate, BigInteger _reservationEndDate, List<BigInteger> _daysBeforeStartForRefund, List<BigInteger> _refundPercentages, byte[] _hotelId, byte[] _roomId, BigInteger _numberOfTravelers) {
         final Function function = new Function(
                 "createHotelReservation", 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_hotelReservationId), 
@@ -175,8 +177,10 @@ public class IHotelReservation extends Contract {
                 new org.web3j.abi.datatypes.generated.Uint256(_reservationCostLOC), 
                 new org.web3j.abi.datatypes.generated.Uint256(_reservationStartDate), 
                 new org.web3j.abi.datatypes.generated.Uint256(_reservationEndDate), 
-                new org.web3j.abi.datatypes.generated.Uint256(_daysBeforeStartForRefund), 
-                new org.web3j.abi.datatypes.generated.Uint256(_refundPercentage), 
+                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.Utils.typeMap(_daysBeforeStartForRefund, org.web3j.abi.datatypes.generated.Uint256.class)), 
+                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.Utils.typeMap(_refundPercentages, org.web3j.abi.datatypes.generated.Uint256.class)), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_hotelId), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_roomId), 
                 new org.web3j.abi.datatypes.generated.Uint256(_numberOfTravelers)), 
@@ -184,43 +188,47 @@ public class IHotelReservation extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<Tuple10<byte[], String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], byte[], BigInteger>> getHotelReservation() {
+    public RemoteCall<Tuple11<byte[], String, BigInteger, BigInteger, BigInteger, List<BigInteger>, List<BigInteger>, byte[], byte[], BigInteger, Boolean>> getHotelReservation() {
         final Function function = new Function("getHotelReservation", 
                 Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteCall<Tuple10<byte[], String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], byte[], BigInteger>>(
-                new Callable<Tuple10<byte[], String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], byte[], BigInteger>>() {
-                    public Tuple10<byte[], String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], byte[], BigInteger> call() throws Exception {
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<DynamicArray<Uint256>>() {}, new TypeReference<DynamicArray<Uint256>>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bool>() {}));
+        return new RemoteCall<Tuple11<byte[], String, BigInteger, BigInteger, BigInteger, List<BigInteger>, List<BigInteger>, byte[], byte[], BigInteger, Boolean>>(
+                new Callable<Tuple11<byte[], String, BigInteger, BigInteger, BigInteger, List<BigInteger>, List<BigInteger>, byte[], byte[], BigInteger, Boolean>>() {
+                    @Override
+                    public Tuple11<byte[], String, BigInteger, BigInteger, BigInteger, List<BigInteger>, List<BigInteger>, byte[], byte[], BigInteger, Boolean> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple10<byte[], String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], byte[], BigInteger>(
+                        return new Tuple11<byte[], String, BigInteger, BigInteger, BigInteger, List<BigInteger>, List<BigInteger>, byte[], byte[], BigInteger, Boolean>(
                                 (byte[]) results.get(0).getValue(), 
                                 (String) results.get(1).getValue(), 
                                 (BigInteger) results.get(2).getValue(), 
                                 (BigInteger) results.get(3).getValue(), 
                                 (BigInteger) results.get(4).getValue(), 
-                                (BigInteger) results.get(5).getValue(), 
-                                (BigInteger) results.get(6).getValue(), 
+                                convertToNative((List<Uint256>) results.get(5).getValue()), 
+                                convertToNative((List<Uint256>) results.get(6).getValue()), 
                                 (byte[]) results.get(7).getValue(), 
                                 (byte[]) results.get(8).getValue(), 
-                                (BigInteger) results.get(9).getValue());
+                                (BigInteger) results.get(9).getValue(), 
+                                (Boolean) results.get(10).getValue());
                     }
                 });
     }
 
-    public RemoteCall<TransactionReceipt> cancelHotelReservation(byte[] _hotelReservationId) {
-        final Function function = new Function(
-                "cancelHotelReservation", 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_hotelReservationId)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+    public RemoteCall<Boolean> validateCancelation(String _customerAddress) {
+        final Function function = new Function("validateCancelation", 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_customerAddress)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
-    public RemoteCall<TransactionReceipt> validateCancelation(String _customerAddress) {
-        final Function function = new Function(
-                "validateCancelation", 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_customerAddress)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+    public RemoteCall<Boolean> validateRefundForCreation(List<BigInteger> _daysBeforeStartForRefund, List<BigInteger> _refundPercentages, BigInteger _startDate) {
+        final Function function = new Function("validateRefundForCreation", 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.Utils.typeMap(_daysBeforeStartForRefund, org.web3j.abi.datatypes.generated.Uint256.class)), 
+                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.Utils.typeMap(_refundPercentages, org.web3j.abi.datatypes.generated.Uint256.class)), 
+                new org.web3j.abi.datatypes.generated.Uint256(_startDate)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteCall<Tuple2<BigInteger, BigInteger>> getLocToBeRefunded() {
@@ -229,6 +237,7 @@ public class IHotelReservation extends Contract {
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         return new RemoteCall<Tuple2<BigInteger, BigInteger>>(
                 new Callable<Tuple2<BigInteger, BigInteger>>() {
+                    @Override
                     public Tuple2<BigInteger, BigInteger> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple2<BigInteger, BigInteger>(
@@ -245,26 +254,52 @@ public class IHotelReservation extends Contract {
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
-    public RemoteCall<TransactionReceipt> validatePeriodForWithdraw() {
-        final Function function = new Function(
-                "validatePeriodForWithdraw", 
+    public RemoteCall<Boolean> validateReservationForWithdraw() {
+        final Function function = new Function("validateReservationForWithdraw", 
                 Arrays.<Type>asList(), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
-    public RemoteCall<TransactionReceipt> getLocForWithdraw() {
-        final Function function = new Function(
-                "getLocForWithdraw", 
+    public RemoteCall<BigInteger> getLocForWithdraw() {
+        final Function function = new Function("getLocForWithdraw", 
                 Arrays.<Type>asList(), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteCall<TransactionReceipt> getHotelReservationId() {
-        final Function function = new Function(
-                "getHotelReservationId", 
+    public RemoteCall<byte[]> getHotelReservationId() {
+        final Function function = new Function("getHotelReservationId", 
                 Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
+        return executeRemoteCallSingleValueReturn(function, byte[].class);
+    }
+
+    public RemoteCall<BigInteger> getHotelReservationCost() {
+        final Function function = new Function("getHotelReservationCost", 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteCall<Boolean> validateDispute(String _customerAddress) {
+        final Function function = new Function("validateDispute", 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_customerAddress)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
+    }
+
+    public RemoteCall<Boolean> getReservationDisputeStatus() {
+        final Function function = new Function("getReservationDisputeStatus", 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
+    }
+
+    public RemoteCall<TransactionReceipt> setReservationDisputeStatus(Boolean _isDisputeOpen) {
+        final Function function = new Function(
+                "setReservationDisputeStatus", 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Bool(_isDisputeOpen)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }

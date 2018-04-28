@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.web3j.abi.EventEncoder;
-import org.web3j.abi.EventValues;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
@@ -43,7 +42,7 @@ public class IHotelReservationFactory extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<String, String>();
+        _addresses = new HashMap<>();
     }
 
     protected IHotelReservationFactory(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -58,11 +57,11 @@ public class IHotelReservationFactory extends Contract {
         final Event event = new Event("LogCreateHotelReservation", 
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogCreateHotelReservationEventResponse> responses = new ArrayList<LogCreateHotelReservationEventResponse>(valueList.size());
-        for (EventValues eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             LogCreateHotelReservationEventResponse typedResponse = new LogCreateHotelReservationEventResponse();
-//            typedResponse.log = eventValues.getLog();
+            typedResponse.log = eventValues.getLog();
             typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse._customerAddress = (String) eventValues.getNonIndexedValues().get(1).getValue();
             typedResponse._reservationStartDate = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
@@ -79,8 +78,9 @@ public class IHotelReservationFactory extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogCreateHotelReservationEventResponse>() {
+            @Override
             public LogCreateHotelReservationEventResponse call(Log log) {
-                EventValues eventValues = extractEventParameters(event, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogCreateHotelReservationEventResponse typedResponse = new LogCreateHotelReservationEventResponse();
                 typedResponse.log = log;
                 typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
@@ -96,11 +96,11 @@ public class IHotelReservationFactory extends Contract {
         final Event event = new Event("LogCancelHotelReservation", 
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
-        List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogCancelHotelReservationEventResponse> responses = new ArrayList<LogCancelHotelReservationEventResponse>(valueList.size());
-        for (EventValues eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             LogCancelHotelReservationEventResponse typedResponse = new LogCancelHotelReservationEventResponse();
-//            typedResponse.log = eventValues.getLog();
+            typedResponse.log = eventValues.getLog();
             typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse._customerAddress = (String) eventValues.getNonIndexedValues().get(1).getValue();
             typedResponse._locRefundsRemainder = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
@@ -116,8 +116,9 @@ public class IHotelReservationFactory extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogCancelHotelReservationEventResponse>() {
+            @Override
             public LogCancelHotelReservationEventResponse call(Log log) {
-                EventValues eventValues = extractEventParameters(event, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogCancelHotelReservationEventResponse typedResponse = new LogCancelHotelReservationEventResponse();
                 typedResponse.log = log;
                 typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
@@ -132,11 +133,11 @@ public class IHotelReservationFactory extends Contract {
         final Event event = new Event("LogWithdrawal", 
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}));
-        List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogWithdrawalEventResponse> responses = new ArrayList<LogWithdrawalEventResponse>(valueList.size());
-        for (EventValues eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             LogWithdrawalEventResponse typedResponse = new LogWithdrawalEventResponse();
-//            typedResponse.log = eventValues.getLog();
+            typedResponse.log = eventValues.getLog();
             typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse._withdrawnAmount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
             responses.add(typedResponse);
@@ -151,8 +152,9 @@ public class IHotelReservationFactory extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogWithdrawalEventResponse>() {
+            @Override
             public LogWithdrawalEventResponse call(Log log) {
-                EventValues eventValues = extractEventParameters(event, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogWithdrawalEventResponse typedResponse = new LogWithdrawalEventResponse();
                 typedResponse.log = log;
                 typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
@@ -162,18 +164,39 @@ public class IHotelReservationFactory extends Contract {
         });
     }
 
-    public RemoteCall<byte[]> hotelReservationIds(BigInteger param0) {
-        final Function function = new Function("hotelReservationIds", 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(param0)), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-        return executeRemoteCallSingleValueReturn(function, byte[].class);
+    public List<LogDisputeCreatedEventResponse> getLogDisputeCreatedEvents(TransactionReceipt transactionReceipt) {
+        final Event event = new Event("LogDisputeCreated", 
+                Arrays.<TypeReference<?>>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}));
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        ArrayList<LogDisputeCreatedEventResponse> responses = new ArrayList<LogDisputeCreatedEventResponse>(valueList.size());
+        for (Contract.EventValuesWithLog eventValues : valueList) {
+            LogDisputeCreatedEventResponse typedResponse = new LogDisputeCreatedEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
+            typedResponse._locRefundsRemainder = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
     }
 
-    public RemoteCall<String> implContract() {
-        final Function function = new Function("implContract", 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        return executeRemoteCallSingleValueReturn(function, String.class);
+    public Observable<LogDisputeCreatedEventResponse> logDisputeCreatedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        final Event event = new Event("LogDisputeCreated", 
+                Arrays.<TypeReference<?>>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}));
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(event));
+        return web3j.ethLogObservable(filter).map(new Func1<Log, LogDisputeCreatedEventResponse>() {
+            @Override
+            public LogDisputeCreatedEventResponse call(Log log) {
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                LogDisputeCreatedEventResponse typedResponse = new LogDisputeCreatedEventResponse();
+                typedResponse.log = log;
+                typedResponse._hotelReservationId = (byte[]) eventValues.getNonIndexedValues().get(0).getValue();
+                typedResponse._locRefundsRemainder = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
+                return typedResponse;
+            }
+        });
     }
 
     public RemoteCall<TransactionReceipt> upgradeImplementation(String _newImpl) {
@@ -182,13 +205,6 @@ public class IHotelReservationFactory extends Contract {
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_newImpl)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
-    }
-
-    public RemoteCall<BigInteger> locRefundsRemainder() {
-        final Function function = new Function("locRefundsRemainder", 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<String> getOwner() {
@@ -205,33 +221,12 @@ public class IHotelReservationFactory extends Contract {
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
-    public RemoteCall<String> withdrawDestinationAddress() {
-        final Function function = new Function("withdrawDestinationAddress", 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        return executeRemoteCallSingleValueReturn(function, String.class);
-    }
-
-    public RemoteCall<String> withdrawerAddress() {
-        final Function function = new Function("withdrawerAddress", 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        return executeRemoteCallSingleValueReturn(function, String.class);
-    }
-
     public RemoteCall<TransactionReceipt> init() {
         final Function function = new Function(
                 "init", 
                 Arrays.<Type>asList(), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
-    }
-
-    public RemoteCall<BigInteger> maxAllowedWithdrawCyclesCount() {
-        final Function function = new Function("maxAllowedWithdrawCyclesCount", 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> transferOwnership(String newOwner) {
@@ -257,15 +252,17 @@ public class IHotelReservationFactory extends Contract {
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
-    public RemoteCall<TransactionReceipt> createHotelReservation(byte[] _hotelReservationId, BigInteger _reservationCostLOC, BigInteger _reservationStartDate, BigInteger _reservationEndDate, BigInteger _daysBeforeStartForRefund, BigInteger _refundPercentage, byte[] _hotelId, byte[] _roomId, BigInteger _numberOfTravelers) {
+    public RemoteCall<TransactionReceipt> createHotelReservation(byte[] _hotelReservationId, BigInteger _reservationCostLOC, BigInteger _reservationStartDate, BigInteger _reservationEndDate, List<BigInteger> _daysBeforeStartForRefund, List<BigInteger> _refundPercentages, byte[] _hotelId, byte[] _roomId, BigInteger _numberOfTravelers) {
         final Function function = new Function(
                 "createHotelReservation", 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_hotelReservationId), 
                 new org.web3j.abi.datatypes.generated.Uint256(_reservationCostLOC), 
                 new org.web3j.abi.datatypes.generated.Uint256(_reservationStartDate), 
                 new org.web3j.abi.datatypes.generated.Uint256(_reservationEndDate), 
-                new org.web3j.abi.datatypes.generated.Uint256(_daysBeforeStartForRefund), 
-                new org.web3j.abi.datatypes.generated.Uint256(_refundPercentage), 
+                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.Utils.typeMap(_daysBeforeStartForRefund, org.web3j.abi.datatypes.generated.Uint256.class)), 
+                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.Utils.typeMap(_refundPercentages, org.web3j.abi.datatypes.generated.Uint256.class)), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_hotelId), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_roomId), 
                 new org.web3j.abi.datatypes.generated.Uint256(_numberOfTravelers)), 
@@ -379,6 +376,29 @@ public class IHotelReservationFactory extends Contract {
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
+    public RemoteCall<TransactionReceipt> dispute(byte[] _hotelReservationId) {
+        final Function function = new Function(
+                "dispute", 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_hotelReservationId)), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteCall<TransactionReceipt> setDisputeDestinationAddress(String _disputeDestinationAddress) {
+        final Function function = new Function(
+                "setDisputeDestinationAddress", 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_disputeDestinationAddress)), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteCall<String> getDisputeDestinationAddress() {
+        final Function function = new Function("getDisputeDestinationAddress", 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        return executeRemoteCallSingleValueReturn(function, String.class);
+    }
+
     public static RemoteCall<IHotelReservationFactory> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         return deployRemoteCall(IHotelReservationFactory.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
     }
@@ -431,5 +451,13 @@ public class IHotelReservationFactory extends Contract {
         public byte[] _hotelReservationId;
 
         public BigInteger _withdrawnAmount;
+    }
+
+    public static class LogDisputeCreatedEventResponse {
+        public Log log;
+
+        public byte[] _hotelReservationId;
+
+        public BigInteger _locRefundsRemainder;
     }
 }
