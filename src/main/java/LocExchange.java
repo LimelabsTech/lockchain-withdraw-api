@@ -124,20 +124,18 @@ public class LocExchange {
 		EthSendTransaction ethSendTransaction;
 		try {
 			ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get();
-			System.out.println("dadada");
 		} catch (ExecutionException e) {
 			throw new SmartContractException("Sending ether to the smart contract failed");
 		}
 		String transactionHash = ethSendTransaction.getTransactionHash();
-		System.out.println(transactionHash);
 		return transactionHash;
 	}
 
 	public static void main(String[] args) throws Exception {
-//		setRate();
+		setRate();
 		getRate();
-//		withdrawLoc();
-//		sendEther();
+		withdrawLoc();
+		sendEther();
 	}
 
 }

@@ -174,7 +174,7 @@ public class HotelReservation {
 		}
 		return maxCyclesCount;
 	}
-	
+		
 	public static void withdrawAll() throws Exception {
 
 		hotelReservationsForWithdrawTotal = prepareArrayForWithdraw();
@@ -296,7 +296,7 @@ public class HotelReservation {
 //		getWithdrawerDestinationAddress();
 //		setMaxAllowedCyclesCount();
 //		getmaxAllowedWithdrawCyclesCount();
-//		setDisputeDestinationAddress();
+		setDisputeDestinationAddress();
 //		getDisputeAddress();
 //		withdrawAll();
 	}
