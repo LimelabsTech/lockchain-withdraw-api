@@ -153,7 +153,7 @@ public class HotelReservation {
 		
 		try {
 			withdrawerDestinationAddress = hotelReservationFactory
-					.getWithdrawerAddress().send();
+					.getWithdrawDestinationAddress().send();
 		} catch (Exception e) {
 			throw new SmartContractException("Getting the withdrawer destination address failed");
 		}
